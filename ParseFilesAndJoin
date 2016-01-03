@@ -42,3 +42,10 @@ def split_show_channel(line):
 show_channel = show_channel_file.map(split_show_channel)
 show_channel.collect() #or
 show_channel.take(1)
+
+# Join the two datasets. Any order of joining is fine, so long as there is consistency and you check the files when reading/
+joined_dataset = show_views.join(show_channel)
+joined_dataset.collect()
+joined_dataset.take(1)
+# output should be:
+# [(u'PostModern_Cooking',(1038, u'DEF'))]

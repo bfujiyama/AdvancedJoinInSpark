@@ -1,0 +1,16 @@
+# extact channel as key
+def extract_channel_views(line):
+	channel = line[1][1]
+	views = line[1][0]
+	return (channel, views)
+
+# apply above code to joined dataset to create RDD of channels and views
+channel_views = joined_dataset.map(extract_channel_views)
+channel_views.take(1)
+
+# sum across all channels
+def sum_views(a, b):
+	return a + b
+
+# apply summing code to channel and views RDD and collect results
+channel_views.reduceByKey(sum_views).collect()

@@ -1,0 +1,44 @@
+# Make sure the 6 files are available in the HDFS input/ folder by running this command in the terminal (not in PySpark!):
+hdfs dfs -ls input/
+# output:
+# input/join2_genchanA.txt
+# input/join2_genchanB.txt
+# input/join2_genchanC.txt
+# input/join2_gennumA.txt
+# input/join2_gennumB.txt
+# input/join2_gennumC.txt
+
+# read all gennum files into Spark and check output
+show_views_file = sc.textFile("input/join2_gennum?.txt")
+show_views_file.take(2)
+#output: [u'Hourly_Sports,21', u'PostModern_Show,38']
+
+# parse shows files
+def split_show_views(line):
+	line = line.strip()
+	key_value = line.split(",")
+	show = key_value[0]
+	views = key_value[1]
+	views = int(views)
+	return(show, views)
+
+# transform input RDD with above code, then check output
+show_views = show_views_file.map(split_show_views)
+show_views.collect() #or
+show_views.take(1)
+
+# read all genchan files into Spark
+show_channel_file = sc.textFile("input/join2_genchan?.txt")
+
+# parse channel files
+def split_show_channel(line):
+	line = line.strip()
+	key_value = line.split(",")
+	show = key_value[0]
+	channel = key_value[1]
+	return(show, channel)
+
+# transform input RDD with above code, then check output
+show_channel = show_channel_file.map(split_show_channel)
+show_channel.collect() #or
+show_channel.take(1)
